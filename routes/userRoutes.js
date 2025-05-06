@@ -1,12 +1,9 @@
 // routes/userRoutes.js
 const express = require('express');
+const { getMe } = require('../controllers/userController');
+const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
-const controller = require('../controllers/userController');
-const auth = require('../middleware/authMiddleware');
 
-router.post('/register', controller.register);
-router.post('/login', controller.login);
-router.post('/stage', auth, controller.saveStage);
-router.get('/ranking', controller.getRanking);
+router.get('/me', protect, getMe);
 
 module.exports = router;
