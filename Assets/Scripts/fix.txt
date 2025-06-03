@@ -1,0 +1,24 @@
+맵 수치 설정
+Stage 별로 몬스터의 종류, 출현 빈도 다르게
+출현빈도는 스테이지를 넘어갈 수록 
+1Stage 100% Enemy1,2 출현
+2Stage 120% Enemy1,2,3 출현
+3Stage 150% Enemy1,2,3,4 출현
+4Stage 170% Enemy2,3,4 출현
+5Stage 200% Enemy2,3,4,5 출현
+
+몬스터 수치 설정
+Enemy 1 기본 몹
+hp 100 dmg 10 spd 0.3
+
+Enemy 2 중형 몹(튼튼)
+hp 200 dmg 30 spd 대신 이속 느림
+
+Enemy 3 소형 몹(빠르고 아픈대신 물몸)
+hp 80 dmg 20 spd 빠르게
+
+Enemy 4 기본몹의 강화형
+hp 150 dmg 30 spd 0.5
+
+Enemy 5 엘리트 몹(빠르고 튼튼하고 강함)
+hp 300 dmg 40 spd 0.7

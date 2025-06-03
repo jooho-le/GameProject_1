@@ -1,0 +1,86 @@
+
+y	
+왼쪽 (-5, 3 0 -3)
+오른쪽 (5, 3 0 -3)
+위 (-3 0 3, 6)
+아래 (-3 0 3, -6)
+
+
+
+
+한거
+몬스터들 왼쪽벽에서 랜덤생성되고 플레이어 쫏아감 
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Enemy : MonoBehaviour
+{
+    public float speed;
+    public float health = 100f;  // 체력 변수 (기본값: 100)
+    private Rigidbody2D target;  // Player의 Rigidbody2D를 타겟으로 설정
+    private bool isLived = true;
+
+    private Rigidbody2D rigid;
+    private SpriteRenderer spriter;
+
+    void Awake()
+    {
+        rigid = GetComponent<Rigidbody2D>();
+        spriter = GetComponent<SpriteRenderer>();
+
+        // Player를 찾아서 target에 할당
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            target = player.GetComponent<Rigidbody2D>();
+        }
+        else
+        {
+            Debug.LogError("Player object not found! Ensure your player has the 'Player' tag.");
+        }
+    }
+
+    void FixedUpdate() 
+    {
+        if(!isLived) // isLived가 false이면 실행하지 않음
+            return; 
+
+        // 타겟(플레이어)와의 방향 벡터 계산
+        Vector2 dirVec = target.position - rigid.position;
+        Vector2 nextVec = dirVec.normalized * speed * Time.fixedDeltaTime; 
+        rigid.MovePosition(rigid.position + nextVec); // 현재위치 + 다음위치
+        rigid.velocity = Vector2.zero; // 물리충돌이 위치이동에 영향 미치지 않도록 설정
+    }
+
+    void LateUpdate() 
+    {
+        if(!isLived) // isLived가 false이면 실행하지 않음
+            return; 
+
+        // 플레이어 위치에 따라 스프라이트 방향을 반전시킴
+        spriter.flipX = target.position.x < rigid.position.x;
+    }
+
+    // 체력 감소 함수
+    public void TakeDamage(float damage)
+    {
+        if (!isLived) return; // 이미 죽었다면 데미지 받지 않음
+
+        health -= damage;  // 체력 감소
+        if (health <= 0)
+        {
+            Die();  // 체력이 0 이하가 되면 죽음 처리
+        }
+    }
+
+    // 적이 죽을 때 처리
+    private void Die()
+    {
+        isLived = false;  // 적이 죽었다고 표시
+        // 여기서 죽음에 따른 애니메이션이나 다른 처리를 할 수 있습니다.
+        Destroy(gameObject);  // 게임 오브젝트를 파괴하여 적 제거
+    }
+}
