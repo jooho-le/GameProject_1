@@ -1,20 +1,15 @@
 {
-  "name": "gameproject1_sever",
+  "name": "gameproject1_server",
   "version": "1.0.0",
-  "description": "Unity MainMenu용 회원가입·로그인·스테이지 현황 API 서버",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.7.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
+    "mongoose": "^7.0.3",
+    "dotenv": "^16.0.3",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0"
   }
 }
