@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;  // 랭킹 정렬을 위해 필요
 
 public class PopupManager : MonoBehaviour
 {
@@ -15,50 +16,40 @@ public class PopupManager : MonoBehaviour
     [Header("UI Labels")]
     [SerializeField] private TextMeshProUGUI userIdText;
 
+    [Header("Leaderboard UI")]
+    [SerializeField] private GameObject leaderboardPanel;
+    [SerializeField] private TextMeshProUGUI leaderboardText;
+
     private bool isSignupMode;
 
     private void Awake()
     {
-        // 필드 할당 체크
-        if (popupPanel == null) Debug.LogError("PopupPanel이 할당되지 않았습니다.");
-        if (confirmButton == null) Debug.LogError("ConfirmButton이 할당되지 않았습니다.");
-        if (cancelButton == null) Debug.LogError("CancelButton이 할당되지 않았습니다.");
-
         popupPanel?.SetActive(false);
+        leaderboardPanel?.SetActive(false);
+
         confirmButton?.onClick.AddListener(HandleConfirm);
         cancelButton?.onClick.AddListener(() => popupPanel?.SetActive(false));
     }
 
-    // 회원가입 팝업 표시
     public void ShowSignup()
     {
         isSignupMode = true;
         popupPanel?.SetActive(true);
     }
 
-    // 로그인 팝업 표시
     public void ShowLogin()
     {
         isSignupMode = false;
         popupPanel?.SetActive(true);
     }
 
-    // 게임 시작: Stage1 로드
     public void StartGame()
     {
         SceneManager.LoadScene("Stage1");
     }
 
-    // 확인 버튼 처리
     private void HandleConfirm()
     {
-        Debug.Log($"[Debug] IDField='{idInputField.text}', PWField='{pwInputField.text}'");
-        if (idInputField == null || pwInputField == null)
-        {
-            Debug.LogError("InputField가 할당되지 않았습니다.");
-            return;
-        }
-
         string username = idInputField.text.Trim();
         string password = pwInputField.text.Trim();
 
@@ -94,5 +85,22 @@ public class PopupManager : MonoBehaviour
                 SceneManager.LoadScene("GameScene");
             });
         }
+    }
+
+    // ✅ 리더보드 보기
+    public void ShowLeaderboard()
+    {
+        leaderboardPanel.SetActive(true);
+        StartCoroutine(FindObjectOfType<ApiClient>().Get("http://localhost:4000/api/game/leaderboard/kill", res =>
+        {
+            var list = JsonUtility.FromJson<KillLeaderboard>("{\"entries\":" + res + "}");
+            leaderboardText.text = "🏆 킬 랭킹 🏆\n\n" +
+                string.Join("\n", list.entries.Select((e, i) => $"{i + 1}위: {e.userId} - {e.kills}킬"));
+        }));
+    }
+
+    public void CloseLeaderboard()
+    {
+        leaderboardPanel.SetActive(false);
     }
 }

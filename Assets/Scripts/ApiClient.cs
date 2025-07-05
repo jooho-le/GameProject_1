@@ -1,21 +1,26 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections;
-public class ApiClient : MonoBehaviour {
-  public IEnumerator Post(string url, string json, System.Action<string> onSuccess) {
-    var uwr = new UnityWebRequest(url, "POST");
-    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-    uwr.uploadHandler = new UploadHandlerRaw(bodyRaw);
-    uwr.downloadHandler = new DownloadHandlerBuffer();
-    uwr.SetRequestHeader("Content-Type", "application/json");
-    yield return uwr.SendWebRequest();
-    if (uwr.result == UnityWebRequest.Result.Success) onSuccess(uwr.downloadHandler.text);
-    else Debug.LogError(uwr.error);
-  }
-  public IEnumerator Get(string url, System.Action<string> onSuccess) {
-    var uwr = UnityWebRequest.Get(url);
-    yield return uwr.SendWebRequest();
-    if (uwr.result == UnityWebRequest.Result.Success) onSuccess(uwr.downloadHandler.text);
-    else Debug.LogError(uwr.error);
-  }
+
+public class ApiClient : MonoBehaviour
+{
+    public IEnumerator Post(string url, string json, Action<string> callback)
+    {
+        var req = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        req.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        req.downloadHandler = new DownloadHandlerBuffer();
+        req.SetRequestHeader("Content-Type", "application/json");
+
+        yield return req.SendWebRequest();
+        callback(req.downloadHandler.text);
+    }
+
+    public IEnumerator Get(string url, Action<string> callback)
+    {
+        var req = UnityWebRequest.Get(url);
+        yield return req.SendWebRequest();
+        callback(req.downloadHandler.text);
+    }
 }
