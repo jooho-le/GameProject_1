@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
-using System.Linq;  // 랭킹 정렬을 위해 필요
+using System.Linq;
 
 public class PopupManager : MonoBehaviour
 {
@@ -87,15 +87,14 @@ public class PopupManager : MonoBehaviour
         }
     }
 
-    // ✅ 리더보드 보기
     public void ShowLeaderboard()
     {
         leaderboardPanel.SetActive(true);
         StartCoroutine(FindObjectOfType<ApiClient>().Get("http://localhost:4000/api/game/leaderboard/kill", res =>
         {
             var list = JsonUtility.FromJson<KillLeaderboard>("{\"entries\":" + res + "}");
-            leaderboardText.text = "🏆 킬 랭킹 🏆\n\n" +
-                string.Join("\n", list.entries.Select((e, i) => $"{i + 1}위: {e.userId} - {e.kills}킬"));
+            leaderboardText.text = "\uD83C\uDFC6 \uD0AC \uB7AD\uD0B9 \uD83C\uDFC6\n\n" +
+                string.Join("\n", list.entries.Select((e, i) => $"{i + 1}\uC704: {e.userId} - {e.kills}\uD0AC"));
         }));
     }
 
